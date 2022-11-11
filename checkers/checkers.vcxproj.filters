@@ -27,4 +27,24 @@
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="img\board.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="img\checker_black_king.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="img\checker_black.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="img\checker_white.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="img\checker_white_king.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="img\select.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

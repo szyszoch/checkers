@@ -151,6 +151,14 @@
   <ItemGroup>
     <ClInclude Include="include\app.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="img\board.png" />
+    <Image Include="img\checker_black.png" />
+    <Image Include="img\checker_black_king.png" />
+    <Image Include="img\checker_white.png" />
+    <Image Include="img\checker_white_king.png" />
+    <Image Include="img\select.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

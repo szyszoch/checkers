@@ -1,6 +1,7 @@
 # directories
 .vs/
 objs/
+bin/
 
 # files
 *.user

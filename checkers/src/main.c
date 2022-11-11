@@ -1,8 +1,14 @@
-#include <stdio.h>
+#include "app.h"
 
-int main(int argv, char* args[]) {
+int main(int argc, char* args[]) {
 
-	printf("test\n");
+	if (App_Init() == 0) {
+
+		// Do something
+
+	}
+
+	App_Destroy();
 
 	return 0;
 }

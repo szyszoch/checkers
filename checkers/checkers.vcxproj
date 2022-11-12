@@ -146,10 +146,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\app.c" />
+    <ClCompile Include="src\board.c" />
     <ClCompile Include="src\main.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\app.h" />
+    <ClInclude Include="include\board.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="img\board.png" />

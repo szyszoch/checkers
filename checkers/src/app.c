@@ -13,11 +13,17 @@ enum TEXTURES {
 typedef struct App {
 	SDL_Window* window;
 	SDL_Renderer* renderer;
-	SDL_Event* event;
+	SDL_Event event;
 	SDL_Texture* texture[TEXTURES_COUNT];
 } App;
 
 static App app;
+
+// ===================
+
+void App_DrawBoard();
+
+// ===================
 
 int App_Init() {
 
@@ -93,6 +99,20 @@ int App_Menu() {
 }
 
 int App_Game() {
+
+	BD_Load();
+	bool IS_STATE_RUNNING = true;
+
+	while (IS_STATE_RUNNING) {
+
+		SDL_RenderClear(app.renderer);
+		SDL_PollEvent(&app.event);
+		App_DrawBoard();
+		SDL_RenderPresent(app.renderer);
+
+
+	}
+
 	return 0;
 }
 
@@ -100,3 +120,47 @@ int App_GameOver() {
 	return 0;
 }
 
+// ===================
+
+void App_DrawBoard() {
+
+	SDL_Rect src, dst;
+	
+	// Board
+	src.x = 0; src.y = 0; src.w = 800; src.h = 800;
+	dst.x = 0; dst.y = 0; dst.w = 800; dst.h = 800;
+	SDL_RenderCopy(app.renderer, app.texture[TEXTURE_BOARD], &src, &dst);
+	
+	// Checkers
+	src.x = 0; src.y = 0; src.w = 100; src.h = 100;
+	dst.x = 0; dst.y = 0; dst.w = 100; dst.h = 100;
+
+	for (int y = 0; y < 8; y++) {
+		for (int x = 0; x < 8; x++) {
+			
+			dst.x = 100 * x; dst.y = 100 * y;
+			unsigned int checker = BD_GetPiece(x,y);
+
+			switch (checker) {
+			case BD_WHITE_CHECKER: {
+				SDL_RenderCopy(app.renderer, app.texture[TEXTURE_WHITE_CHECKER], &src, &dst);
+				break;
+			}
+			case BD_BLACK_CHECKER: {
+				SDL_RenderCopy(app.renderer, app.texture[TEXTURE_BLACK_CHECKER], &src, &dst);
+				break;
+			}
+			case BD_WHITE_KING_CHECKER: {
+				SDL_RenderCopy(app.renderer, app.texture[TEXTURE_WHITE_KING_CHECKER], &src, &dst);
+				break;
+			}
+			case BD_BLACK_KING_CHECKER: {
+				SDL_RenderCopy(app.renderer, app.texture[TEXTURE_BLACK_KING_CHECKER], &src, &dst);
+				break;
+			}
+			}
+
+		}
+	}
+
+}

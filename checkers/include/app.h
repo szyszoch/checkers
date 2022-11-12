@@ -3,6 +3,7 @@
 #include <SDL_image.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include "board.h"
 
 #define APP_WINDOW_TITLE "Checkers"
 #define APP_WINDOW_WIDTH 800

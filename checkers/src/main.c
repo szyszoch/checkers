@@ -8,7 +8,6 @@ int main(int argc, char* args[]) {
 	}
 
 	bool IS_APP_RUNNING = true;
-	int AppState = APP_STATE_GAME;
 
 	while (IS_APP_RUNNING) {
 
@@ -18,15 +17,15 @@ int main(int argc, char* args[]) {
 			break;
 		}
 		case APP_STATE_MENU: {
-			AppState = App_Menu();
+			App_Menu();
 			break;
 		}
 		case APP_STATE_GAME: {
-			AppState = App_Game();
+			App_Game();
 			break;
 		}
 		case APP_STATE_GAMEOVER: {
-			AppState = App_GameOver();
+			App_GameOver();
 			break;
 		}
 		default: {

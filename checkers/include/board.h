@@ -2,6 +2,7 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,6 +19,6 @@
 #define BD_BLACK_TEAM BD_BLACK_CHECKER | BD_BLACK_KING_CHECKER
 
 void BD_New();
-void BD_Load();
+bool BD_Load();
 void BD_Save();
 unsigned int BD_GetPiece(int x, int y);

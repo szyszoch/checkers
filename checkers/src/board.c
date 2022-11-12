@@ -37,9 +37,13 @@ void BD_New() {
 
 }
 
-void BD_Load() {
+bool BD_Load() {
 
 	FILE* file = fopen(BD_SAVEFILE, "r");
+
+	if (file == NULL) {
+		return false;
+	}
 
 	// Board pieces
 	for (int y = 0; y < 8; y++) {
@@ -70,7 +74,7 @@ void BD_Load() {
 			}
 			default: {
 				printf("Wrong savefile format\n");
-				return;
+				return false;
 			}
 			}
 
@@ -80,11 +84,11 @@ void BD_Load() {
 				
 				if (x < 7) {
 					printf("Wrong savefile format\n");
-					return;
+					return false;
 				}
 				else if (buff != '\n') {
 					printf("Wrong savefile format\n");
-					return;
+					return false;
 				}
 
 			}
@@ -106,6 +110,7 @@ void BD_Load() {
 
 	fclose(file);
 
+	return true;
 }
 
 void BD_Save() {

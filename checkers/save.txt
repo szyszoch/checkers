@@ -1,9 +1,0 @@
-x b x b x b x b
-b x b x B x b x
-x b x b x b x b
-x x x x x x x x
-x x x x x x x x
-w x W x w x w x
-x w x w x w x w
-w x w x w x w x
-turn: w

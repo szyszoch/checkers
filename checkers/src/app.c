@@ -10,6 +10,8 @@ enum TEXTURES {
 	TEXTURE_BUTTON_NEWGAME,
 	TEXTURE_BUTTON_CONTINUE,
 	TEXTURE_BUTTON_QUIT,
+	TEXTURE_GAMEOVER_WHITE_WIN,
+	TEXTURE_GAMEOVER_BLACK_WIN,
 	TEXTURES_COUNT
 };
 
@@ -75,6 +77,8 @@ int App_Init() {
 	app.texture[TEXTURE_BUTTON_NEWGAME] = IMG_LoadTexture(app.renderer, "img/button_newgame.png");
 	app.texture[TEXTURE_BUTTON_CONTINUE] = IMG_LoadTexture(app.renderer, "img/button_continue.png");
 	app.texture[TEXTURE_BUTTON_QUIT] = IMG_LoadTexture(app.renderer, "img/button_exitgame.png");
+	app.texture[TEXTURE_GAMEOVER_WHITE_WIN] = IMG_LoadTexture(app.renderer, "img/white_winner.png");
+	app.texture[TEXTURE_GAMEOVER_BLACK_WIN] = IMG_LoadTexture(app.renderer, "img/black_winner.png");
 
 	for (int i = 0; i < TEXTURES_COUNT; i++) {
 		if (app.texture[i] == NULL) {
@@ -94,13 +98,10 @@ int App_Init() {
 		BN_SetSprite(app.button[i], (SDL_Rect) { 0, 0, 300, 50 }, BUTTON_CLICK);
 	}
 
-	BN_SetPosition(app.button[BUTTON_NEWGAME], 150, 200, 300, 50);
-	BN_SetPosition(app.button[BUTTON_CONTINUE], 150, 300, 300, 50);
-	BN_SetPosition(app.button[BUTTON_QUIT], 150, 400, 300, 50);
-
 	// Loading board
 	if (BD_Load() == false) {
 		BD_New();
+		BD_Load();
 	}
 
 	AppState = APP_STATE_MENU;
@@ -128,6 +129,10 @@ void App_Destroy() {
 
 void App_Menu() {
 
+	BN_SetPosition(app.button[BUTTON_NEWGAME], 150, 200, 300, 50);
+	BN_SetPosition(app.button[BUTTON_CONTINUE], 150, 300, 300, 50);
+	BN_SetPosition(app.button[BUTTON_QUIT], 150, 400, 300, 50);
+
 	while (AppState == APP_STATE_MENU) {
 
 		// Frame Cap
@@ -137,9 +142,9 @@ void App_Menu() {
 		SDL_PollEvent(&app.event);
 
 			// Buttons
-		for (int i = 0; i < BUTTONS_COUNT; i++) {
-			BN_Update(app.button[i], &app.event);
-		}
+		BN_Update(app.button[BUTTON_NEWGAME], &app.event);
+		BN_Update(app.button[BUTTON_CONTINUE], &app.event);
+		BN_Update(app.button[BUTTON_QUIT], &app.event);
 
 		if (BN_Clicked(app.button[BUTTON_NEWGAME])) {
 			AppState = APP_STATE_GAME;
@@ -158,15 +163,23 @@ void App_Menu() {
 			AppState = APP_STATE_QUIT;
 		}
 
+			// Input 
+		if (app.event.type == SDL_KEYDOWN) {
+			const Uint8* key = SDL_GetKeyboardState(NULL);
+			if (key[SDL_SCANCODE_ESCAPE] == true) {
+				AppState = APP_STATE_QUIT;
+			}
+		}
+
 		// Render textures
 
 			// Background
 		App_DrawBoard();
 
 			// Buttons
-		for (int i = 0; i < BUTTONS_COUNT; i++) {
-			BN_Render(app.button[i], app.renderer);
-		}
+		BN_Render(app.button[BUTTON_NEWGAME], app.renderer);
+		BN_Render(app.button[BUTTON_CONTINUE], app.renderer);
+		BN_Render(app.button[BUTTON_QUIT], app.renderer);
 
 		SDL_RenderPresent(app.renderer);
 		
@@ -187,12 +200,20 @@ void App_Game() {
 		// Handle events
 		SDL_PollEvent(&app.event);
 
-		// Window
+			// Window
 		if (app.event.type == SDL_QUIT) {
 			AppState = APP_STATE_QUIT;
 		}
 
-		// Interacting with board
+			// Input 
+		if (app.event.type == SDL_KEYDOWN) {
+			const Uint8* key = SDL_GetKeyboardState(NULL);
+			if (key[SDL_SCANCODE_ESCAPE] == true) {
+				AppState = APP_STATE_MENU;
+			}
+		}
+
+			// Interacting with board
 		if (app.event.button.button == SDL_BUTTON_LEFT && app.event.type == SDL_MOUSEBUTTONDOWN) {
 
 			int mx, my;
@@ -212,12 +233,20 @@ void App_Game() {
 			}
 			else if (select_x != -1 && select_y != -1) {
 				BD_Move(select_x, select_y, mx, my);
+				if (BD_IsGameOver()) {
+					AppState = APP_STATE_GAMEOVER;
+				}
+				else {
+					BD_Save();
+				}
 				select_x = -1;
 				select_y = -1;
 			}
 
 		}
 		
+		
+
 		// Render textures
 		// 
 			// Board
@@ -234,6 +263,12 @@ void App_Game() {
 
 void App_GameOver() {
 
+	BN_SetPosition(app.button[BUTTON_NEWGAME], 150, 300, 300, 50);
+	BN_SetPosition(app.button[BUTTON_QUIT], 150, 400, 300, 50);
+
+	SDL_Texture* results = NULL;
+	results = (BD_GetWinner() == (BD_WHITE_TEAM)) ? app.texture[TEXTURE_GAMEOVER_WHITE_WIN] : app.texture[TEXTURE_GAMEOVER_BLACK_WIN];
+
 	while (AppState == APP_STATE_GAMEOVER) {
 
 		// Frame Cap
@@ -242,8 +277,19 @@ void App_GameOver() {
 		// Handle events
 		SDL_PollEvent(&app.event);
 
-		// Window
+			// Window
 		if (app.event.type == SDL_QUIT) {
+			AppState = APP_STATE_QUIT;
+		}
+
+			// Buttons
+		BN_Update(app.button[BUTTON_NEWGAME], &app.event);
+		BN_Update(app.button[BUTTON_QUIT], &app.event);
+
+		if (BN_Clicked(app.button[BUTTON_NEWGAME])) {
+			AppState = APP_STATE_GAME;
+		}
+		else if (BN_Clicked(app.button[BUTTON_QUIT])) {
 			AppState = APP_STATE_QUIT;
 		}
 
@@ -252,9 +298,21 @@ void App_GameOver() {
 			// Board
 		App_DrawBoard();
 
+			// Results
+		SDL_Rect src = {0,0,400,175};
+		SDL_Rect dst = { 100, 100, 400, 175 };
+		SDL_RenderCopy(app.renderer, results, & src, & dst);
+
+			// Buttons
+		BN_Render(app.button[BUTTON_NEWGAME], app.renderer);
+		BN_Render(app.button[BUTTON_QUIT], app.renderer);
+
 		SDL_RenderPresent(app.renderer);
 
 	}
+
+	BD_New();
+	BD_Load();
 
 }
 

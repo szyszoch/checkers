@@ -41,3 +41,4 @@ unsigned int BD_GetPiece(int x, int y);
 unsigned int BD_GetTurn();
 void BD_Move(int src_x, int src_y, int dst_x, int dst_y);
 bool BD_IsGameOver();
+unsigned int BD_GetWinner();

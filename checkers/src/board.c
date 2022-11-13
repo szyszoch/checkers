@@ -1,7 +1,5 @@
 #include "board.h"
 
-
-
 typedef struct Board {
 	unsigned int piece[8][8];
 	unsigned int possible_moves[8][8];
@@ -61,6 +59,13 @@ bool BD_Load() {
 			
 			char buff = fgetc(file);
 
+			if ( (y % 2 == 0 && x % 2 == 0) || (x % 2 == 1 && y % 2 == 1) ) {
+				if (buff != 'x') {
+					printf("save.txt:%d:%d Wrong savefile format. Colored fields must be empty\n", y, x * 2);
+					return false;
+				}
+			}
+
 			switch (buff) {
 			case 'w': {
 				board.piece[y][x] = BD_WHITE_CHECKER;
@@ -83,7 +88,13 @@ bool BD_Load() {
 				break;
 			}
 			default: {
-				printf("Wrong savefile format\n");
+				printf(
+				"save.txt:%d:%d Wrong savefile format. Possible charackters are:\n"
+				"'w' - white checker\n"
+				"'W' - white king checker\n"
+				"'b' - black checker\n"
+				"'B' - black king checker\n"
+				"'x' - empty field\n",y,x*2);
 				return false;
 			}
 			}
@@ -93,11 +104,11 @@ bool BD_Load() {
 			if (buff != ' ' ) {
 				
 				if (x < 7) {
-					printf("Wrong savefile format\n");
+					printf("save.txt:%d:%d Wrong savefile format\n", y, x * 2+1);
 					return false;
 				}
 				else if (buff != '\n') {
-					printf("Wrong savefile format\n");
+					printf("save.txt:%d:%d Wrong savefile format\n", y, x * 2+1);
 					return false;
 				}
 
@@ -107,12 +118,12 @@ bool BD_Load() {
 
 	}
 
-	// Turn
+// Turn
 	{
-		char string[7];
-		fgets(string, 7, file);
-		char turn = fgetc(file);
-		board.turn = (turn == 'w') ? (BD_WHITE_TEAM) : (BD_BLACK_TEAM);
+	char string[7];
+	fgets(string, 7, file);
+	char turn = fgetc(file);
+	board.turn = (turn == 'w') ? (BD_WHITE_TEAM) : (BD_BLACK_TEAM);
 	}
 
 	// Winner
@@ -133,7 +144,7 @@ void BD_Save() {
 
 			switch (board.piece[y][x]) {
 			case BD_CHECKER_NONE: {
-				fputc('x',file);
+				fputc('x', file);
 				break;
 			}
 			case BD_WHITE_CHECKER: {
@@ -155,16 +166,16 @@ void BD_Save() {
 			}
 
 			if (x < 7) {
-				fputc(' ',file);
+				fputc(' ', file);
 			}
 
 		}
-		fputc('\n',file);
+		fputc('\n', file);
 	}
 
 	// Turn
 	char turn = (board.turn == (BD_WHITE_TEAM)) ? 'w' : 'b';
-	fprintf(file,"turn: %c\n", turn);
+	fprintf(file, "turn: %c\n", turn);
 
 	fclose(file);
 
@@ -187,13 +198,13 @@ void BD_Move(int src_x, int src_y, int dst_x, int dst_y) {
 		return;
 	}
 
-	if ( !( (board.turn) & board.piece[src_y][src_x]) ) {
+	if (!((board.turn) & board.piece[src_y][src_x])) {
 		return;
 	}
 
 	int move_type = BD_CheckMoveType(src_x, src_y, dst_x, dst_y);
 
-	if ( !( (board.possible_moves[src_y][src_x]) & move_type) ) {
+	if (!((board.possible_moves[src_y][src_x]) & move_type)) {
 		return;
 	}
 
@@ -205,6 +216,13 @@ void BD_Move(int src_x, int src_y, int dst_x, int dst_y) {
 		board.piece[dst_y][dst_x] = board.piece[src_y][src_x];
 		board.piece[(src_y + dst_y) / 2][(src_x + dst_x) / 2] = BD_CHECKER_NONE;
 		board.piece[src_y][src_x] = BD_CHECKER_NONE;
+	}
+
+	if ( (BD_WHITE_TEAM)&board.piece[dst_y][dst_x] && dst_y == 0 ) {
+		board.piece[dst_y][dst_x] = BD_WHITE_KING_CHECKER;
+	}
+	else if ((BD_BLACK_TEAM)&board.piece[dst_y][dst_x] && dst_y == 7) {
+		board.piece[dst_y][dst_x] = BD_BLACK_KING_CHECKER;
 	}
 
 	board.turn = (board.turn == (BD_WHITE_TEAM)) ? (BD_BLACK_TEAM) : (BD_WHITE_TEAM);
@@ -225,6 +243,10 @@ bool BD_IsGameOver() {
 
 	return true;
 
+}
+
+unsigned int BD_GetWinner() {
+	return board.winner;
 }
 
 // ===================
@@ -343,3 +365,4 @@ unsigned int BD_CheckMoveType(int src_x, int src_y, int dst_x, int dst_y) {
 		return 0;
 
 }
+

@@ -156,12 +156,19 @@
     <ClInclude Include="include\button.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="img\black_checker.png" />
+    <Image Include="img\black_king_checker.png" />
     <Image Include="img\board.png" />
+    <Image Include="img\button_continue.png" />
+    <Image Include="img\button_exitgame.png" />
+    <Image Include="img\button_newgame.png" />
     <Image Include="img\checker_black.png" />
     <Image Include="img\checker_black_king.png" />
     <Image Include="img\checker_white.png" />
     <Image Include="img\checker_white_king.png" />
     <Image Include="img\select.png" />
+    <Image Include="img\white_checker.png" />
+    <Image Include="img\white_king_checker.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

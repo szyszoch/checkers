@@ -26,8 +26,6 @@ typedef struct App {
 	SDL_Event event;
 	SDL_Texture* texture[TEXTURES_COUNT];
 	Button* button[BUTTONS_COUNT];
-	SDL_Cursor* cursor_arrow;
-	SDL_Cursor* cursor_hand;
 } App;
 
 int AppState;
@@ -100,9 +98,10 @@ int App_Init() {
 	BN_SetPosition(app.button[BUTTON_CONTINUE], 150, 300, 300, 50);
 	BN_SetPosition(app.button[BUTTON_QUIT], 150, 400, 300, 50);
 
-	// Creating cursors
-	app.cursor_arrow = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
-	app.cursor_hand = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
+	// Loading board
+	if (BD_Load() == false) {
+		BD_New();
+	}
 
 	AppState = APP_STATE_MENU;
 
@@ -110,9 +109,6 @@ int App_Init() {
 }
 
 void App_Destroy() {
-
-	SDL_FreeCursor(app.cursor_arrow);
-	SDL_FreeCursor(app.cursor_hand);
 
 	for (int i = 0; i < BUTTONS_COUNT; i++) {
 		BN_Destroy(app.button[i]);
@@ -152,19 +148,20 @@ void App_Menu() {
 		}
 		else if (BN_Clicked(app.button[BUTTON_CONTINUE])) {
 			AppState = APP_STATE_GAME;
-			BD_Load();
 		}
 		else if (BN_Clicked(app.button[BUTTON_QUIT])) {
+			AppState = APP_STATE_QUIT;
+		}
+
+			// Window
+		if (app.event.type == SDL_QUIT) {
 			AppState = APP_STATE_QUIT;
 		}
 
 		// Render textures
 
 			// Background
-		SDL_Rect src, dst;
-		src.x = 0; src.y = 0; src.w = 600; src.h = 600;
-		dst.x = 0; dst.y = 0; dst.w = 600; dst.h = 600;
-		SDL_RenderCopy(app.renderer, app.texture[TEXTURE_BOARD], &src, &dst);
+		App_DrawBoard();
 
 			// Buttons
 		for (int i = 0; i < BUTTONS_COUNT; i++) {
@@ -178,22 +175,53 @@ void App_Menu() {
 
 void App_Game() {
 
-	BD_Load();
-	bool IS_STATE_RUNNING = true;
+	while (AppState == APP_STATE_GAME) {
 
-	while (IS_STATE_RUNNING) {
+		// Frame Cap
+		SDL_Delay(1000 / 60);
 
-		SDL_RenderClear(app.renderer);
+		// Handle events
 		SDL_PollEvent(&app.event);
-		App_DrawBoard();
-		SDL_RenderPresent(app.renderer);
 
+		// Window
+		if (app.event.type == SDL_QUIT) {
+			AppState = APP_STATE_QUIT;
+		}
+
+		// Render textures
+		// 
+			// Board
+		App_DrawBoard();
+
+		SDL_RenderPresent(app.renderer);
 
 	}
 
 }
 
 void App_GameOver() {
+
+	while (AppState == APP_STATE_GAMEOVER) {
+
+		// Frame Cap
+		SDL_Delay(1000 / 60);
+
+		// Handle events
+		SDL_PollEvent(&app.event);
+
+		// Window
+		if (app.event.type == SDL_QUIT) {
+			AppState = APP_STATE_QUIT;
+		}
+
+		// Render textures
+		
+			// Board
+		App_DrawBoard();
+
+		SDL_RenderPresent(app.renderer);
+
+	}
 
 }
 

@@ -58,5 +58,26 @@
     <Image Include="img\select.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
+    <Image Include="img\black_checker.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="img\black_king_checker.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="img\button_continue.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="img\button_exitgame.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="img\button_newgame.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="img\white_checker.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="img\white_king_checker.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
   </ItemGroup>
 </Project>

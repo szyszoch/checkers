@@ -175,6 +175,10 @@ void App_Menu() {
 
 void App_Game() {
 
+	// Selected checker
+	int select_x = -1;
+	int select_y = -1;
+
 	while (AppState == APP_STATE_GAME) {
 
 		// Frame Cap
@@ -188,10 +192,39 @@ void App_Game() {
 			AppState = APP_STATE_QUIT;
 		}
 
+		// Interacting with board
+		if (app.event.button.button == SDL_BUTTON_LEFT && app.event.type == SDL_MOUSEBUTTONDOWN) {
+
+			int mx, my;
+			SDL_GetMouseState(&mx, &my);
+			mx /= 75; my /= 75;
+			
+			unsigned int turn = BD_GetTurn();
+			unsigned int piece = BD_GetPiece(mx, my);
+
+			if (mx == select_x && my == select_y) {
+				select_x = -1;
+				select_y = -1;
+			}
+			else if ((turn)&piece) {
+				select_x = mx;
+				select_y = my;
+			}
+			else if (select_x != -1 && select_y != -1) {
+				BD_Move(select_x, select_y, mx, my);
+				select_x = -1;
+				select_y = -1;
+			}
+
+		}
+		
 		// Render textures
 		// 
 			// Board
 		App_DrawBoard();
+		SDL_Rect src = { 0,0,75,75 };
+		SDL_Rect dst = { 75*select_x,75*select_y,75,75 };
+		SDL_RenderCopy(app.renderer, app.texture[TEXTURE_SELECT], &src, &dst);
 
 		SDL_RenderPresent(app.renderer);
 
@@ -229,7 +262,8 @@ void App_GameOver() {
 
 void App_DrawBoard() {
 
-	SDL_Rect src, dst;
+	SDL_Rect src = {0,0,0,0};
+	SDL_Rect dst = {0,0,0,0};
 	
 	// Board
 	src.x = 0; src.y = 0; src.w = 600; src.h = 600;

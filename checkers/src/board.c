@@ -278,11 +278,11 @@ void BD_CheckPossibleMoves() {
 					board.possible_moves[y][x] += BD_MOVE_NE;
 				}
 			}
-				// Strike
+				// Capture
 			if (!(y - 2 < 0 || x + 2 > 7)) {
 				if (board.piece[y - 2][x + 2] == BD_CHECKER_NONE && 
 					(enemy_team) & board.piece[y - 1][x + 1]) {
-					board.possible_moves[y][x] += BD_STRIKE_NE;
+					board.possible_moves[y][x] += BD_CAPTURE_NE;
 				}
 			}
 
@@ -294,11 +294,11 @@ void BD_CheckPossibleMoves() {
 					board.possible_moves[y][x] += BD_MOVE_NW;
 				}
 			}
-				// Strike
+				// Capture
 			if (!(y - 2 < 0 || x - 2 < 0)) {
 				if (board.piece[y - 2][x - 2] == BD_CHECKER_NONE &&
 					(enemy_team)&board.piece[y - 1][x - 1]) {
-					board.possible_moves[y][x] += BD_STRIKE_NW;
+					board.possible_moves[y][x] += BD_CAPTURE_NW;
 				}
 			}
 
@@ -310,11 +310,11 @@ void BD_CheckPossibleMoves() {
 					board.possible_moves[y][x] += BD_MOVE_SE;
 				}
 			}
-				// Strike
+				// Capture
 			if (!(y + 2 > 7 || x + 2 > 7)) {
 				if (board.piece[y + 2][x + 2] == BD_CHECKER_NONE &&
 					(enemy_team)&board.piece[y + 1][x + 1]) {
-					board.possible_moves[y][x] += BD_STRIKE_SE;
+					board.possible_moves[y][x] += BD_CAPTURE_SE;
 				}
 			}
 
@@ -326,11 +326,11 @@ void BD_CheckPossibleMoves() {
 					board.possible_moves[y][x] += BD_MOVE_SW;
 				}
 			}
-				// Strike
+				// Capture
 			if (!(y + 2 > 7 || x - 2 < 0)) {
 				if (board.piece[y + 2][x - 2] == BD_CHECKER_NONE &&
 					(enemy_team)&board.piece[y + 1][x - 1]) {
-					board.possible_moves[y][x] += BD_STRIKE_SW;
+					board.possible_moves[y][x] += BD_CAPTURE_SW;
 				}
 			}
 
@@ -354,13 +354,13 @@ unsigned int BD_CheckMoveType(int src_x, int src_y, int dst_x, int dst_y) {
 	else if (t_x == -1 && t_y == -1)
 		return BD_MOVE_SE;
 	else if (t_x == 2 && t_y == 2)
-		return BD_STRIKE_NW;
+		return BD_CAPTURE_NW;
 	else if (t_x == 2 && t_y == -2)
-		return BD_STRIKE_SW;
+		return BD_CAPTURE_SW;
 	else if (t_x == -2 && t_y == 2)
-		return BD_STRIKE_NE;
+		return BD_CAPTURE_NE;
 	else if (t_x == -2 && t_y == -2)
-		return BD_STRIKE_SE;
+		return BD_CAPTURE_SE;
 	else
 		return 0;
 

@@ -129,9 +129,9 @@ void App_Destroy() {
 
 void App_Menu() {
 
-	BN_SetPosition(app.button[BUTTON_NEWGAME], 150, 200, 300, 50);
-	BN_SetPosition(app.button[BUTTON_CONTINUE], 150, 300, 300, 50);
-	BN_SetPosition(app.button[BUTTON_QUIT], 150, 400, 300, 50);
+	BN_SetPosition(app.button[BUTTON_NEWGAME], (600 - 275)/2, 200, 275, 50);
+	BN_SetPosition(app.button[BUTTON_CONTINUE], (600-275)/2, 300, 275, 50);
+	BN_SetPosition(app.button[BUTTON_QUIT], (600 - 275)/2, 400, 275, 50);
 
 	while (AppState == APP_STATE_MENU) {
 

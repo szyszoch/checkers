@@ -101,7 +101,6 @@ int App_Init() {
 	// Loading board
 	if (BD_Load() == false) {
 		BD_New();
-		BD_Load();
 	}
 
 	AppState = APP_STATE_MENU;
@@ -149,7 +148,6 @@ void App_Menu() {
 		if (BN_Clicked(app.button[BUTTON_NEWGAME])) {
 			AppState = APP_STATE_GAME;
 			BD_New();
-			BD_Load();
 		}
 		else if (BN_Clicked(app.button[BUTTON_CONTINUE])) {
 			AppState = APP_STATE_GAME;
@@ -312,7 +310,7 @@ void App_GameOver() {
 	}
 
 	BD_New();
-	BD_Load();
+	BD_Save();
 
 }
 

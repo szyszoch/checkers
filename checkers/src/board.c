@@ -18,30 +18,92 @@ unsigned int BD_CheckMoveType(int src_x, int src_y, int dst_x, int dst_y);
 
 void BD_New() {
 
-	FILE* file = fopen(BD_SAVEFILE,"w");
-	if (file == NULL) {
-		printf("Can't create new savefile\n");
-		return;
-	}
+	board.turn = BD_WHITE_TEAM;
+	board.winner = BD_NONE_CHECKER;
 
-	// b - black checker
-	// B - black king checker
-	// w - white checker
-	// W - white king checker
+	for (int y = 0; y < 8; y++)
+		for (int x = 0; x < 8; x++)
+			board.possible_moves[y][x] = 0;
 
-	const char* content =	
-	"x b x b x b x b\n"
-	"b x b x b x b x\n"
-	"x b x b x b x b\n"
-	"x x x x x x x x\n"
-	"x x x x x x x x\n"
-	"w x w x w x w x\n"
-	"x w x w x w x w\n"
-	"w x w x w x w x\n"
-	"turn: w\n";
+	// row 1
+	board.piece[0][0] = BD_NONE_CHECKER;
+	board.piece[0][1] = BD_BLACK_CHECKER;
+	board.piece[0][2] = BD_NONE_CHECKER;
+	board.piece[0][3] = BD_BLACK_CHECKER;
+	board.piece[0][4] = BD_NONE_CHECKER;
+	board.piece[0][5] = BD_BLACK_CHECKER;
+	board.piece[0][6] = BD_NONE_CHECKER;
+	board.piece[0][7] = BD_BLACK_CHECKER;
 
-	fprintf(file, content);
-	fclose(file);
+	// row 2
+	board.piece[1][0] = BD_BLACK_CHECKER;
+	board.piece[1][1] = BD_NONE_CHECKER;
+	board.piece[1][2] = BD_BLACK_CHECKER;
+	board.piece[1][3] = BD_NONE_CHECKER;
+	board.piece[1][4] = BD_BLACK_CHECKER;
+	board.piece[1][5] = BD_NONE_CHECKER;
+	board.piece[1][6] = BD_BLACK_CHECKER;
+	board.piece[1][7] = BD_NONE_CHECKER;
+
+	// row 3
+	board.piece[2][0] = BD_NONE_CHECKER;
+	board.piece[2][1] = BD_BLACK_CHECKER;
+	board.piece[2][2] = BD_NONE_CHECKER;
+	board.piece[2][3] = BD_BLACK_CHECKER;
+	board.piece[2][4] = BD_NONE_CHECKER;
+	board.piece[2][5] = BD_BLACK_CHECKER;
+	board.piece[2][6] = BD_NONE_CHECKER;
+	board.piece[2][7] = BD_BLACK_CHECKER;
+
+	// row 4
+	board.piece[3][0] = BD_NONE_CHECKER;
+	board.piece[3][1] = BD_NONE_CHECKER;
+	board.piece[3][2] = BD_NONE_CHECKER;
+	board.piece[3][3] = BD_NONE_CHECKER;
+	board.piece[3][4] = BD_NONE_CHECKER;
+	board.piece[3][5] = BD_NONE_CHECKER;
+	board.piece[3][6] = BD_NONE_CHECKER;
+	board.piece[3][7] = BD_NONE_CHECKER;
+
+	// row 5
+	board.piece[4][0] = BD_NONE_CHECKER;
+	board.piece[4][1] = BD_NONE_CHECKER;
+	board.piece[4][2] = BD_NONE_CHECKER;
+	board.piece[4][3] = BD_NONE_CHECKER;
+	board.piece[4][4] = BD_NONE_CHECKER;
+	board.piece[4][5] = BD_NONE_CHECKER;
+	board.piece[4][6] = BD_NONE_CHECKER;
+	board.piece[4][7] = BD_NONE_CHECKER;
+
+	// row 6
+	board.piece[5][0] = BD_WHITE_CHECKER;
+	board.piece[5][1] = BD_NONE_CHECKER;
+	board.piece[5][2] = BD_WHITE_CHECKER;
+	board.piece[5][3] = BD_NONE_CHECKER;
+	board.piece[5][4] = BD_WHITE_CHECKER;
+	board.piece[5][5] = BD_NONE_CHECKER;
+	board.piece[5][6] = BD_WHITE_CHECKER;
+	board.piece[5][7] = BD_NONE_CHECKER;
+
+	// row 7
+	board.piece[6][0] = BD_NONE_CHECKER;
+	board.piece[6][1] = BD_WHITE_CHECKER;
+	board.piece[6][2] = BD_NONE_CHECKER;
+	board.piece[6][3] = BD_WHITE_CHECKER;
+	board.piece[6][4] = BD_NONE_CHECKER;
+	board.piece[6][5] = BD_WHITE_CHECKER;
+	board.piece[6][6] = BD_NONE_CHECKER;
+	board.piece[6][7] = BD_WHITE_CHECKER;
+
+	// row 8
+	board.piece[7][0] = BD_WHITE_CHECKER;
+	board.piece[7][1] = BD_NONE_CHECKER;
+	board.piece[7][2] = BD_WHITE_CHECKER;
+	board.piece[7][3] = BD_NONE_CHECKER;
+	board.piece[7][4] = BD_WHITE_CHECKER;
+	board.piece[7][5] = BD_NONE_CHECKER;
+	board.piece[7][6] = BD_WHITE_CHECKER;
+	board.piece[7][7] = BD_NONE_CHECKER;
 
 }
 
@@ -84,7 +146,7 @@ bool BD_Load() {
 				break;
 			}
 			case 'x': {
-				board.piece[y][x] = BD_CHECKER_NONE;
+				board.piece[y][x] = BD_NONE_CHECKER;
 				break;
 			}
 			default: {
@@ -127,7 +189,7 @@ bool BD_Load() {
 	}
 
 	// Winner
-	board.winner = BD_CHECKER_NONE;
+	board.winner = BD_NONE_CHECKER;
 
 	fclose(file);
 
@@ -143,7 +205,7 @@ void BD_Save() {
 		for (int x = 0; x < 8; x++) {
 
 			switch (board.piece[y][x]) {
-			case BD_CHECKER_NONE: {
+			case BD_NONE_CHECKER: {
 				fputc('x', file);
 				break;
 			}
@@ -210,12 +272,12 @@ void BD_Move(int src_x, int src_y, int dst_x, int dst_y) {
 
 	if ((BD_MOVES)&move_type) {
 		board.piece[dst_y][dst_x] = board.piece[src_y][src_x];
-		board.piece[src_y][src_x] = BD_CHECKER_NONE;
+		board.piece[src_y][src_x] = BD_NONE_CHECKER;
 	}
 	else {
 		board.piece[dst_y][dst_x] = board.piece[src_y][src_x];
-		board.piece[(src_y + dst_y) / 2][(src_x + dst_x) / 2] = BD_CHECKER_NONE;
-		board.piece[src_y][src_x] = BD_CHECKER_NONE;
+		board.piece[(src_y + dst_y) / 2][(src_x + dst_x) / 2] = BD_NONE_CHECKER;
+		board.piece[src_y][src_x] = BD_NONE_CHECKER;
 	}
 
 	if ( (BD_WHITE_TEAM)&board.piece[dst_y][dst_x] && dst_y == 0 ) {
@@ -264,7 +326,7 @@ void BD_CheckPossibleMoves() {
 
 		for (int x = 0; x < 8; x++) {
 
-			if (board.piece[y][x] == BD_CHECKER_NONE) {
+			if (board.piece[y][x] == BD_NONE_CHECKER) {
 				continue;
 			}
 
@@ -273,14 +335,14 @@ void BD_CheckPossibleMoves() {
 			// NE
 				// Move
 			if ( !(y - 1 < 0 || x + 1 > 7) ) {
-				if (board.piece[y - 1][x + 1] == BD_CHECKER_NONE &&
+				if (board.piece[y - 1][x + 1] == BD_NONE_CHECKER &&
 					( (BD_WHITE_TEAM) & board.piece[y][x] || (BD_KINGS) & board.piece[y][x])) {
 					board.possible_moves[y][x] += BD_MOVE_NE;
 				}
 			}
 				// Capture
 			if (!(y - 2 < 0 || x + 2 > 7)) {
-				if (board.piece[y - 2][x + 2] == BD_CHECKER_NONE && 
+				if (board.piece[y - 2][x + 2] == BD_NONE_CHECKER && 
 					(enemy_team) & board.piece[y - 1][x + 1]) {
 					board.possible_moves[y][x] += BD_CAPTURE_NE;
 				}
@@ -289,14 +351,14 @@ void BD_CheckPossibleMoves() {
 			// NW
 				// Move
 			if (!(y - 1 < 0 || x - 1 < 0)) {
-				if (board.piece[y - 1][x - 1] == BD_CHECKER_NONE &&
+				if (board.piece[y - 1][x - 1] == BD_NONE_CHECKER &&
 					((BD_WHITE_TEAM)&board.piece[y][x] || (BD_KINGS)&board.piece[y][x])) {
 					board.possible_moves[y][x] += BD_MOVE_NW;
 				}
 			}
 				// Capture
 			if (!(y - 2 < 0 || x - 2 < 0)) {
-				if (board.piece[y - 2][x - 2] == BD_CHECKER_NONE &&
+				if (board.piece[y - 2][x - 2] == BD_NONE_CHECKER &&
 					(enemy_team)&board.piece[y - 1][x - 1]) {
 					board.possible_moves[y][x] += BD_CAPTURE_NW;
 				}
@@ -305,14 +367,14 @@ void BD_CheckPossibleMoves() {
 			// SE
 				// Move
 			if (!(y + 1 > 7 || x + 1 > 7)) {
-				if (board.piece[y + 1][x + 1] == BD_CHECKER_NONE &&
+				if (board.piece[y + 1][x + 1] == BD_NONE_CHECKER &&
 					((BD_BLACK_TEAM)&board.piece[y][x] || (BD_KINGS)&board.piece[y][x])) {
 					board.possible_moves[y][x] += BD_MOVE_SE;
 				}
 			}
 				// Capture
 			if (!(y + 2 > 7 || x + 2 > 7)) {
-				if (board.piece[y + 2][x + 2] == BD_CHECKER_NONE &&
+				if (board.piece[y + 2][x + 2] == BD_NONE_CHECKER &&
 					(enemy_team)&board.piece[y + 1][x + 1]) {
 					board.possible_moves[y][x] += BD_CAPTURE_SE;
 				}
@@ -321,14 +383,14 @@ void BD_CheckPossibleMoves() {
 			// SW
 				// Move
 			if (!(y + 1 > 7 || x - 1 < 0)) {
-				if (board.piece[y + 1][x - 1] == BD_CHECKER_NONE &&
+				if (board.piece[y + 1][x - 1] == BD_NONE_CHECKER &&
 					((BD_BLACK_TEAM)&board.piece[y][x] || (BD_KINGS)&board.piece[y][x])) {
 					board.possible_moves[y][x] += BD_MOVE_SW;
 				}
 			}
 				// Capture
 			if (!(y + 2 > 7 || x - 2 < 0)) {
-				if (board.piece[y + 2][x - 2] == BD_CHECKER_NONE &&
+				if (board.piece[y + 2][x - 2] == BD_NONE_CHECKER &&
 					(enemy_team)&board.piece[y + 1][x - 1]) {
 					board.possible_moves[y][x] += BD_CAPTURE_SW;
 				}
